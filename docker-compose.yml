@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  smartbot-mongo:
+    image: mongo:latest
+    container_name: "smartbot-mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./tmp/db:/data/db
+    ports:
+      - 27117:27017
+    command: mongod --smallfiles --logpath=/dev/null
+    networks:
+      - development
+
+  smartbot-development-local:
+    links:
+      - smartbot-mongo
+    depends_on:
+      - smartbot-mongo
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: setup
+    command: >
+      -c "cd /opt/app && exec /bin/bash"
+    volumes:
+      - type: bind
+        source: ./
+        target: /opt/app/
+      - type: bind
+        source: ./deployment-config/aws/
+        target: /root/.aws
+    entrypoint: /bin/bash
+    ports:
+      - target: 3000
+        published: 3000
+        protocol: tcp
+        mode: host
+    networks:
+      - development
+
+networks:
+  development:
+    driver: bridge

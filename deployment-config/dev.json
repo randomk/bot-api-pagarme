@@ -1,0 +1,7 @@
+{
+  "DATABASE_HOST": "ds147073.mlab.com",
+  "DATABASE_USER": "chatbot",
+  "DATABASE_PASSWORD": "kurupira2018",
+  "DATABASE_PORT": "47073",
+  "DATABASE_NAME": "chatbotv1"
+}

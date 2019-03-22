@@ -1,0 +1,141 @@
+service: smartchat
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  memorySize: 128
+  stage: ${opt:stage, 'default'}
+  environment:
+    DATABASE_HOST: ${file(../deployment-config/${self:provider.stage}.json):DATABASE_HOST}
+    DATABASE_USER: ${file(../deployment-config/${self:provider.stage}.json):DATABASE_USER}
+    DATABASE_PASSWORD: ${file(../deployment-config/${self:provider.stage}.json):DATABASE_PASSWORD}
+    DATABASE_PORT: ${file(../deployment-config/${self:provider.stage}.json):DATABASE_PORT}
+    DATABASE_NAME: ${file(../deployment-config/${self:provider.stage}.json):DATABASE_NAME}
+
+package:
+  individually: true
+
+custom:
+  scriptHooks:
+    before:package:createDeploymentArtifacts: sed -i 's/\/*\blib\b\/*//' package.json
+    # before:deploy:createDeploymentArtifacts: sed -i 's/\/*\blib\b\/*//' package.json
+
+functions:
+  bot-post:
+    handler: functions/bot/post.index
+    events:
+      - http:
+          path: bots
+          method: post
+    package: 
+      include:
+        - ../node_modules/**
+        - ../package.json
+        - app/database/**
+        - app/validators/**
+        - app/enums/**
+      exclude:
+        - functions/**
+        - '!functions/bot/post.js'
+
+  bot-get:
+    handler: functions/bot/get.index
+    events:
+      - http:
+          path: bots
+          method: get
+      - http:
+          path: bots/{id}
+          method: get
+          request: 
+            parameters: 
+              paths:
+                id: true
+    package: 
+      include:
+        - ../node_modules/**
+        - ../package.json
+        - app/database/**
+        - app/validators/**
+        - app/enums/**
+      exclude:
+        - functions/**
+        - '!functions/bot/get.js'
+
+  bot-put:
+    handler: functions/bot/put.index
+    events:
+      - http:
+          path: bots
+          method: put
+    package: 
+      include:
+        - ../node_modules/**
+        - ../package.json
+        - app/database/**
+        - app/validators/**
+        - app/enums/**
+      exclude:
+        - functions/**
+        - '!functions/bot/put.js'
+
+  bot-delete:
+    handler: functions/bot/delete.index
+    events:
+      - http:
+          path: bots
+          method: delete
+    package: 
+      include:
+        - ../node_modules/**
+        - ../package.json
+        - app/database/**
+        - app/validators/**
+        - app/enums/**
+      exclude:
+        - functions/**
+        - '!functions/bot/delete.js'
+
+  message-get:
+    handler: functions/message/get.index
+    events:
+      - http:
+          path: messages
+          method: get
+      - http:
+          path: messages/{id}
+          method: get
+          request: 
+            parameters: 
+              paths:
+                id: true
+    package: 
+      include:
+        - ../node_modules/**
+        - ../package.json
+        - app/database/**
+        - app/validators/**
+        - app/enums/**
+      exclude:
+        - functions/**
+        - '!functions/message/get.js'
+
+  message-post:
+    handler: functions/message/post.index
+    events:
+      - http:
+          path: messages
+          method: post
+    package: 
+      include:
+        - ../node_modules/**
+        - ../package.json
+        - app/database/**
+        - app/enums/**
+      exclude:
+        - functions/**
+        - '!functions/message/post.js'
+
+plugins:
+  - serverless-offline
+  - serverless-scriptable-plugin

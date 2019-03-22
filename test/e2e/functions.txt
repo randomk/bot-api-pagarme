@@ -1,0 +1,7 @@
+bot-post:bot:post.index:mock/request/bot/post.json
+bot-put:bot:put.index:mock/request/bot/put.json
+bot-get:bot:get.index:mock/request/bot/get.json
+bot-get:bot:get.index:/dev/null
+bot-delete:bot:delete.index:mock/request/bot/delete.json
+message-post:message:post.index:mock/request/message/post.json
+message-get:message:get.index:mock/request/message/get.json

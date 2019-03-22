@@ -1,0 +1,10 @@
+# package directories
+node_modules
+jspm_packages
+lib/*
+!lib/.gitkeep
+tmp
+npm-debug.log
+
+# Serverless directories
+.serverless

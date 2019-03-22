@@ -1,0 +1,40 @@
+{
+  "name": "chatbot",
+  "version": "1.0.3",
+  "description": "Chat Bot Project",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -r lib ; tsc && npm run set-inventory",
+    "set-inventory": "cp ./package.json ./src/serverless.* ./lib",
+    "invoke": "export SLS_DEBUG=* ; cd lib && serverless invoke local --function $FNC",
+    "start:local": "npm run build && npm run rest-service",
+    "rest-service": "ipAddress=$(hostname -I) export SLS_DEBUG=* ; cd lib && serverless offline start --host $ipAddress",
+    "shoot": "npm run build && npm run invoke",
+    "pack:dev": "npm run set-inventory && cd lib && serverless package --stage dev --package ./artifacts",
+    "pack:prod": "npm run set-inventory && cd lib && serverless package --stage prod --package ./artifacts",
+    "deploy:dev": "cd lib && AWS_PROFILE=\"dev\" serverless deploy --stage dev --verbose",
+    "deploy:prod": "cd lib && AWS_PROFILE=\"prod\"  serverless deploy --stage prod --verbose",
+    "function:dev": "cd lib && AWS_PROFILE=\"dev\" serverless deploy function --stage dev --verbose",
+    "function:prod": "cd lib && AWS_PROFILE=\"dev\" serverless deploy function --stage prod --verbose",
+    "test": "npm run test:e2e",
+    "test:e2e": "./test/e2e/trigger.sh"
+  },
+  "keywords": [],
+  "author": "Natan Oliveira <natan.oliveira0010@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "~8.10.17",
+    "@types/uuid": "~3.4.4",
+    "serverless-offline": "~3.31.3"
+  },
+  "dependencies": {
+    "@types/mongoose": "~5.3.5",
+    "module-alias": "~2.1.0",
+    "mongoose": "~5.4.0",
+    "serverless-scriptable-plugin": "~0.8.0",
+    "uuid": "~3.3.2"
+  },
+  "_moduleAliases": {
+    "@app": "lib/app"
+  }
+}
